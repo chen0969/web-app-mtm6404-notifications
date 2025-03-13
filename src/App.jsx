@@ -1,32 +1,36 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
 import './App.css'
+import notificationsData from './notifications.js'
 
-function App() {
-  const [count, setCount] = useState(0)
+function App({ children }) {
+  const [notifications, setNotifications] = useState(notificationsData)
+
+  const clearNotification = (id) => {
+    setNotifications(notifications.filter(notification => notification.id !== id))
+  }
+
+  const clearAllNotifications = () => {
+    setNotifications([])
+  }
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="App container-fluid">
+      <h1>Notifications ({notifications.length})</h1>
+      <button onClick={clearAllNotifications} className="btn btn-danger mb-3">Clear All Notifications</button>
+      <div className='row'>
+        {children}
+        {notifications.map((notification, index) => (
+          <div className='col-12' key={index}>
+            <div className="row">
+              <span className='col-1 id text-end'>{notification.id}</span>
+              <p className='col-2 name test-center'>{notification.name}</p>
+              <p className='col-7 message p-1'>{notification.message}</p>
+              <button onClick={() => clearNotification(notification.id)} className="col-2 btn btn-warning">Clear</button>
+            </div>
+            <hr />
+          </div>
+        ))}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </div>
   )
 }
